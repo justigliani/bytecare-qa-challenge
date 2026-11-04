@@ -1,0 +1,190 @@
+{
+  "info": {
+    "_postman_id": "89ec2903-4132-4191-9010-c361271557f7",
+    "name": "ByteCare - Automação QA Sprint 4",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "59568443",
+    "_collection_link": "https://go.postman.co/collection/59568443-89ec2903-4132-4191-9010-c361271557f7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01 - Auth Login (HTTP 200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code é 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Retornou o token JWT\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('token');",
+              "    pm.environment.set(\"jwt_token\", jsonData.token);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/Auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "Auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Login com senha inválida (HTTP 401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code é 401 Unauthorized\", function () {\n    pm.response.to.have.status(401);\n});\n\npm.test(\"Nenhum token retornado\", function () {\n    var body = pm.response.text();\n    pm.expect(body).to.not.include(\"token\");\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"senha_errada_123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/Auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "Auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Busca Animal Inexistente (HTTP 404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code é 404 Not Found\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/Animal/00000000-0000-0000-0000-000000000000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "Animal",
+            "00000000-0000-0000-0000-000000000000"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Busca Animal por ID Existente - Rex (HTTP 200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code é 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Valida dados do Rex\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.nome).to.eql(\"Rex\");",
+              "    pm.expect(jsonData.especie).to.eql(\"Canina\");",
+              "    pm.expect(jsonData.raca).to.eql(\"Golden Retriever\");",
+              "    pm.expect(jsonData.sexo).to.eql(\"Macho\");",
+              "    pm.expect(jsonData.peso).to.eql(32.5);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/Animal/673e5c1e-f71d-4b27-a6f0-dd76b9ab4d1b",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "Animal",
+            "673e5c1e-f71d-4b27-a6f0-dd76b9ab4d1b"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

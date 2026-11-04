@@ -42,11 +42,7 @@ Este repositório contém os artefatos de automação de testes de API (Postman)
 
 ## 🔗 Links do Projeto
 
-- 📌 **Azure Boards (Planeamento, Test Cases e Bugs):** <https://dev.azure.com/bytecare-challenge2026/ByteCare%20Challenge%202026/_boards/board/t/ByteCare%20Challenge%202026%20Team/Backlog%20items>
+- 📌 **Azure Boards (Planejamento, Test Cases e Bugs):** <https://dev.azure.com/bytecare-challenge2026/ByteCare%20Challenge%202026/_boards/board/t/ByteCare%20Challenge%202026%20Team/Backlog%20items>
 - 🌐 **Swagger UI (Documentação da API):** https://clyvo-sprint4-rm564361.azurewebsites.net/swagger/index.html
 - 🚀 **Postman Collection Link:** https://www.postman.com/collections/38472534-7db3e13d-b2a8-4444-9889-78b9f10438cf
 - 📹 **Demonstração em Vídeo da Automação (Postman Runner):** https://youtu.be/00Wa1t40F4c
-
-
-- 📌 **Azure Boards (Planejamento, Test Cases e Bugs):** [Acessar o Azure Boards](SUBSTITUA_PELO_SEU_LINK_DO_AZURE)
-- 📹 **Demonstração em Vídeo da Automação (Postman Runner):** [Assistir ao Vídeo no YouTube](SUBSTITUA_PELO_LINK_DO_SEU_VIDEO_DO_YOUTUBE)

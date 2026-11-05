@@ -1,47 +1,57 @@
 # ByteCare QA - Sprint 4 (ClyvoVet)
 
-Este repositório contém os artefatos de automação de testes de API (Postman) e a documentação completa de garantia de qualidade desenvolvida para o sistema ClyvoVet.
-
----
+Este repositório contém os artefatos de automação de testes de API (Postman) e o resumo da execução dos testes manuais, feitos para o sistema ClyvoVet (API .NET publicada no Azure).
 
 ## 🚀 Artefatos de Automação (Postman)
 
-- **Collection:** `ByteCare - Automação QA Sprint 4.postman_collection.json`
-- **Environment:** `ByteCare-Azure.postman_environment.json`
+- Collection: `ByteCare - Automação QA Sprint 4.postman_collection.json`
+- Environment: `ByteCare-Azure.postman_environment.json`
 
-### 📋 Variáveis do Ambiente (`ByteCare-Azure`)
+### Variáveis do ambiente (ByteCare-Azure)
 
-| Variável | Descrição | Valor Inicial (Git) |
-| :--- | :--- | :--- |
-| `baseUrl` | URL base da API implantada no Azure | `https://clyvo-sprint4-rm564361.azurewebsites.net` |
-| `password` | Senha de autenticação do usuário `admin` | *(em branco por segurança)* |
-| `jwt_token` | Token Bearer preenchido automaticamente via script | *(preenchido dinamicamente)* |
+| Variável | Descrição | Valor inicial (Git) |
+|---|---|---|
+| baseUrl | URL base da API publicada no Azure | https://clyvo-sprint4-rm564361.azurewebsites.net |
+| password | Senha do usuário admin | (em branco por segurança) |
+| jwt_token | Token JWT, preenchido pelo script do request 01 | (em branco) |
 
----
+### Como executar
 
-## 🛠️ Como Executar a Automação no Postman
-
-1. Faça o download ou clone a branch `develop` deste repositório.
-2. No Postman, utilize a opção **Import** para carregar os arquivos da Coleção e do Ambiente (`.json`).
+1. Baixe ou clone a branch `develop`.
+2. No Postman, use **Import** para carregar a collection e o environment.
 3. Selecione o ambiente **ByteCare-Azure** no canto superior direito.
-4. Preencha a variável `password` no campo `Current Value` com a senha do usuário `admin`.
-5. Abra a coleção **ByteCare - Automação QA Sprint 4** e clique em **Run collection**.
-6. Clique no botão **Start run** para executar a suíte automatizada (todas as 7 asserções retornarão `PASS`).
+4. Preencha o campo **password** (Current value) com a senha do usuário admin.
+5. Abra a collection e clique em **Run collection**, depois em **Start run**.
+6. Resultado esperado: 4 requests e 7 testes passando. A primeira chamada pode demorar alguns segundos.
 
----
+> ⚠️ Antes de rodar, confira que o ambiente **ByteCare-Azure** aparece selecionado no canto superior direito do Postman (não pode estar "No Environment") e que o `password` está preenchido no **Current value**. Sem isso, todas as requisições falham.
 
-## 📊 Matriz de Execução e Status dos Test Cases (Azure DevOps)
+### Casos automatizados
 
-| ID / CT | Descrição do Caso de Teste | Status | Observações / Defeitos Relacionados |
-| :--- | :--- | :--- | :--- |
-| **CT-01 a CT-04** | Suíte de Testes Manuais e Regressivos da Aplicação | `PASSED` | Testes de regressão executados com sucesso nas Sprints anteriores. |
-| **CT-05** | Validar triagem clínica de urgência e histórico por IA | `FAILED` | **Bug #72:** As rotas `GET /api/RecomendacaoIa` e `/animal/{id}` retornaram lista vazia `[]` após criação da avaliação. |
-| **CT-06** | Validar autenticação JWT e bloqueio de rota sem token | `FAILED` | **Bug #73:** O Passo 1 falhou pois a rota `GET /api/Animal` (e demais GETs) retornou `200 OK` sem o envio do cabeçalho `Authorization`. |
+| # | Request | Valida |
+|---|---|---|
+| 01 | POST /api/Auth/login | HTTP 200 e token JWT retornado (token guardado em jwt_token) |
+| 02 | POST /api/Auth/login com senha inválida | HTTP 401 e nenhum token retornado |
+| 03 | GET /api/Animal/{id inexistente} | HTTP 404 |
+| 04 | GET /api/Animal/{id do Rex} | HTTP 200 e dados do Rex (nome, espécie, raça, sexo, peso) |
 
----
+Observação: a API publicada não exige token nas rotas de animal (Bug #73). Por isso, os requests 03 e 04 passam com ou sem autenticação, e a collection não valida a proteção de rotas.
 
-## 🔗 Links do Projeto
+## 📊 Testes manuais (Azure DevOps)
 
-- 📌 **Azure Boards (Planejamento, Test Cases e Bugs):** <https://dev.azure.com/bytecare-challenge2026/ByteCare%20Challenge%202026/_boards/board/t/ByteCare%20Challenge%202026%20Team/Backlog%20items>
-- 🌐 **Swagger UI (Documentação da API):** https://clyvo-sprint4-rm564361.azurewebsites.net/swagger/index.html
-- 🚀 **Postman
+Executados manualmente no Swagger em 04/11/2026 e registrados nos Test Plans do Azure Boards. Resultado: 4 Passed / 2 Failed.
+
+| CT | PBI | O que valida | Status | Observações |
+|---|---|---|---|---|
+| CT-01 | Cadastro de Perfil de Tutor e Animal | Cadastro válido de tutor e pet (HTTP 201) e consulta do animal criado | PASSED | |
+| CT-02 | Cadastro de Perfil de Tutor e Animal | Rejeição de pet com data de nascimento futura (HTTP 422) | PASSED | |
+| CT-03 | Agendamento de Consulta | Agendamento de consulta presencial (HTTP 201) e status "Agendada" | PASSED | |
+| CT-04 | Consulta de Animal por ID | Busca por ID existente (200) e inexistente (404) | PASSED | |
+| CT-05 | Cálculo de Idade e Triagem de Urgência | Triagem por IA e histórico da avaliação | FAILED | Bug #72: GET /api/RecomendacaoIa e /animal/{id} retornaram [] após criar a avaliação |
+| CT-06 | Autenticação via JWT | Login válido e inválido e bloqueio de rota sem token | FAILED | Bug #73: GET /api/Animal retornou 200 sem Authorization, e DELETE /api/Animal/{id} respondeu 204 sem Authorization |
+
+## 🔗 Links do projeto
+
+- Azure Boards (planejamento, Test Cases e Bugs): https://dev.azure.com/bytecare-challenge2026/ByteCare%20Challenge%202026
+- Swagger UI da API: https://clyvo-sprint4-rm564361.azurewebsites.net/swagger/index.html
+- Vídeo da automação (Postman Runner): https://youtu.be/00Wa1t40F4c

@@ -19,10 +19,12 @@ Este repositório contém os artefatos de automação de testes de API (Postman)
 
 1. Baixe ou clone a branch `develop`.
 2. No Postman, use **Import** para carregar a collection e o environment.
-3. Selecione o ambiente **ByteCare-Azure**.
+3. Selecione o ambiente **ByteCare-Azure** no canto superior direito.
 4. Preencha o campo **password** (Current value) com a senha do usuário admin.
 5. Abra a collection e clique em **Run collection**, depois em **Start run**.
-6. Resultado esperado: 4 requests e 7 testes passando. A primeira chamada pode demorar, porque o plano gratuito do Azure pode estar em repouso.
+6. Resultado esperado: 4 requests e 7 testes passando. A primeira chamada pode demorar alguns segundos.
+
+> ⚠️ Antes de rodar, confira que o ambiente **ByteCare-Azure** aparece selecionado no canto superior direito do Postman (não pode estar "No Environment") e que o `password` está preenchido no **Current value**. Sem isso, todas as requisições falham.
 
 ### Casos automatizados
 
@@ -37,7 +39,7 @@ Observação: a API publicada não exige token nas rotas de animal (Bug #73). Po
 
 ## 📊 Testes manuais (Azure DevOps)
 
-Executados manualmente no Swagger em 04/11/2026 e registrados nos Test Plans do Azure Boards.
+Executados manualmente no Swagger em 04/11/2026 e registrados nos Test Plans do Azure Boards. Resultado: 4 Passed / 2 Failed.
 
 | CT | PBI | O que valida | Status | Observações |
 |---|---|---|---|---|
